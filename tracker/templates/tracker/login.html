@@ -1,0 +1,41 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Login - Campus Issue Tracker{% endblock %}
+
+{% block content %}
+<main class="container p-4" style="max-width: 500px;">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Login</h2>
+
+            {# Display any form errors (e.g., "Invalid username or password") #}
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    Your username and password didn't match. Please try again.
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                {# Django's LoginView automatically provides the 'form' object #}
+                <div class="mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" id="{{ form.username.id_for_label }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" id="{{ form.password.id_for_label }}" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+                
+                
+                <p class="text-center mt-3">
+                    Don't have an account? <a href="{% url 'register' %}">Register here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

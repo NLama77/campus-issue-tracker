@@ -1,0 +1,109 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block title %}{{ issue.title }} - Campus Issue Tracker{% endblock %}
+
+{% block content %}
+<main class="container-fluid p-4">
+    <a href="{% url 'dashboard' %}" class="text-decoration-none text-muted mb-3 d-block">
+        &larr; Back to Dashboard
+    </a>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 fw-bold">{{ issue.title }}</h1>
+        {# Dynamically set badge color based on status #}
+        <span class="badge fs-6 
+            {% if issue.status == 'REPORTED' %} bg-danger 
+            {% elif issue.status == 'IN_PROGRESS' %} bg-warning text-dark 
+            {% elif issue.status == 'RESOLVED' %} bg-success 
+            {% else %} bg-secondary 
+            {% endif %}">
+            {{ issue.get_status_display }}
+        </span>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body d-flex align-items-center"><div class="me-3 text-primary fs-4">&#128100;</div><div><div class="small text-muted">Reported by</div><strong>{{ issue.report.username }}</strong></div></div></div></div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body d-flex align-items-center"><div class="me-3 text-primary fs-4">&#128197;</div><div><div class="small text-muted">Date</div><strong>{{ issue.created_at|date:"m/d/Y" }}</strong></div></div></div></div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body d-flex align-items-center"><div class="me-3 text-primary fs-4">&#128203;</div><div><div class="small text-muted">Category</div><strong>{{ issue.get_category_display }}</strong></div></div></div></div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-7">
+            {% if issue.photo %}
+            <div class="card border-0 shadow-sm mb-4">
+                <img src="{{ issue.photo.url }}" class="card-img-top" alt="{{ issue.title }}">
+            </div>
+            {% endif %}
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Issue Description</h5>
+                    <p class="card-text">{{ issue.description }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-5">
+            <a href="{% url 'vote_issue' issue.id %}" 
+                class="card border-0 shadow-sm mb-4 text-center bg-primary text-white text-decoration-none vote-button" 
+                data-issue-id="{{ issue.id }}">
+            
+                <div class="card-body">
+                    <div class="fs-1">▲</div>
+                    <h4 class="card-title">Upvote</h4>
+                 
+                    <p class="h2 fw-bold vote-count-{{ issue.id }}">{{ issue.votes.count }}</p> 
+                    <small>Support this issue to increase visibility</small>
+                </div>
+            </a>
+            
+            <div class="card border-0 shadow-sm mb-4">
+                 <div class="card-body">
+                    <h5 class="card-title mb-3">Location</h5>
+                    <div class="bg-light border rounded text-center p-4 mb-3">
+                         <div class="fs-1 text-primary">&#128205;</div>
+                         <p class="text-muted small">Map goes here</p>
+                    </div>
+                    <p class="mb-1"><strong>{{ issue.get_building_display }}</strong></p>
+                    <p class="text-muted small">{{ issue.specific_location }}</p>
+                 </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                 <div class="card-body">
+                    <h5 class="card-title">Activity Timeline</h5>
+                    <div>
+                        <span class="d-inline-block bg-primary rounded-circle" style="width: 10px; height: 10px;"></span>
+                        <strong class="ms-2">Issue reported</strong>
+                        <p class="ms-4 text-muted small">{{ issue.report.username }} &middot; {{ issue.created_at|date:"m/d/Y" }}</p>
+                    </div>
+                 </div>
+            </div>
+            {% if user.is_staff %}
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header fw-bold">Admin Actions</div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="statusSelect" class="form-label">Update Status:</label>
+                            <select class="form-select" id="statusSelect" name="status">
+                                {# Loop through available statuses from the model #}
+                                {% for value, display_name in issue.STATUS_CHOICES %}
+                                    <option value="{{ value }}" {% if issue.status == value %}selected{% endif %}>
+                                        {{ display_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Update Status</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div> 
+        
+    </div>
+</main>
+{% endblock %}

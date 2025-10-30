@@ -1,0 +1,84 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block title %}Report an Issue - Campus Issue Tracker{% endblock %}
+
+{% block content %}
+<main class="container p-4" style="max-width: 800px;">
+    <a href="{% url 'dashboard' %}" class="text-decoration-none text-muted mb-3 d-block">
+        &larr; Back to Dashboard
+    </a>
+
+    <div class="mb-4">
+        <h1 class="h3">Report a Campus Issue</h1>
+        <p class="text-muted">Help us maintain our campus by reporting any issues you encounter.</p>
+    </div>
+
+    <div class="alert alert-secondary d-flex align-items-center" role="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill me-2" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+        <div>
+            Please provide as much detail as possible to help our maintenance team resolve the issue quickly.
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="card mb-4">
+            <div class="card-header">Basic Information</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">Issue Title *</label>
+                    {{ form.title }}
+                    <div class="form-text">Provide a clear, concise title.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.category.id_for_label }}" class="form-label">Category *</label>
+                    {{ form.category }}
+                </div>
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Detailed Description *</label>
+                    {{ form.description }}
+                    <div class="form-text">Include what happened, when it started, and any other relevant details.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">Location Details</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.building.id_for_label }}" class="form-label">Building *</label>
+                    {{ form.building }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.specific_location.id_for_label }}" class="form-label">Specific Location (Optional)</label>
+                    {{ form.specific_location }}
+                </div>
+                <label class="form-label">Pin Location on Campus Map</label>
+                <div class="text-center p-5 border rounded bg-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-geo-alt-fill text-primary" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                    <p class="text-muted mt-2">Map functionality will be added later.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">Photo Evidence (Optional)</div>
+            <div class="card-body text-center">
+                <div class="p-5 border-dashed rounded bg-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-upload text-muted" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/></svg>
+                    <p class="mt-2">Drop a photo here or click to browse</p>
+                    {{ form.photo }}
+                </div>
+                <div class="form-text mt-2">A photo helps our team understand and resolve the issue faster.</div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-light me-2">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit Issue Report</button>
+        </div>
+    </form>
+</main>
+{% endblock %}
