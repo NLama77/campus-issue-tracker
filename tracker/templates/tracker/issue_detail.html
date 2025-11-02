@@ -71,14 +71,33 @@
             </div>
             
             <div class="card border-0 shadow-sm">
-                 <div class="card-body">
-                    <h5 class="card-title">Activity Timeline</h5>
-                    <div>
-                        <span class="d-inline-block bg-primary rounded-circle" style="width: 10px; height: 10px;"></span>
-                        <strong class="ms-2">Issue reported</strong>
-                        <p class="ms-4 text-muted small">{{ issue.report.username }} &middot; {{ issue.created_at|date:"m/d/Y" }}</p>
-                    </div>
-                 </div>
+                <div class="card-body">
+                   <h5 class="card-title">Activity Timeline</h5>
+                   
+                   {# This loop will display every log for this issue, newest first #}
+                   {% for log in history_logs %}
+                       <div>
+                           <span class="d-inline-block 
+                               {% if 'changed status' in log.action_description %} bg-warning  
+                               {% else %} bg-primary 
+                               {% endif %}
+                               rounded-circle" style="width: 10px; height: 10px;"></span>
+                           
+                           <strong class="ms-2">{{ log.action_description }}</strong>
+                           
+                           <p class="ms-4 text-muted small">
+                               {% if log.user %}
+                                   by {{ log.user.username }}
+                               {% else %}
+                                   by an unknown user
+                               {% endif %}
+                               &middot; {{ log.timestamp|date:"m/d/Y, P" }}
+                           </p>
+                       </div>
+                    {% empty %}
+                       <p class="text-muted small">No activity has been logged for this issue yet.</p>
+                    {% endfor %}
+                </div>
             </div>
             {% if user.is_staff %}
             <div class="card border-0 shadow-sm mt-4">

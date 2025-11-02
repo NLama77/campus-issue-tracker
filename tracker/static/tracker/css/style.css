@@ -1,3 +1,82 @@
+/* tracker/static/tracker/css/style.css */
+
+/* 1. Define our new NKU color palette */
+:root {
+    --nku-gold: #FFC82E;
+    --nku-black: #222222;
+    --nku-background: #f8f9fa;
+    --nku-card-white: #FFFFFF;
+    --nku-text: #343a40;
+
+    --font-heading: 'Merriweather', serif;
+    --font-body: 'Lato', sans-serif;
+}
+
+/* 2. Style the main body */
+body {
+    background-color: var(--nku-background);
+    color: var(--nku-text);
+    font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6,
+.fw-bold,
+.card-title {
+    font-family: var(--font-heading);
+}
+
+a {
+    color: var(--nku-gold);
+}
+a:hover {
+    color: #e6b328; /* The darker gold from your button hover */
+}
+/* 3. Override Bootstrap's PRIMARY color to be NKU Gold */
+
+/* Change the main blue button */
+.btn-primary {
+    background-color: var(--nku-gold) !important;
+    border-color: var(--nku-gold) !important;
+    color: var(--nku-black); /* Gold looks best with black text */
+    font-weight: bold;
+}
+
+/* Change the button's hover/active state */
+.btn-primary:hover, .btn-primary:active {
+    background-color: #e6b328; /* A slightly darker gold */
+    border-color: #e6b328;
+    color: var(--nku-black);
+}
+
+/* Change the primary background color */
+.bg-primary {
+    background-color: var(--nku-gold) !important;
+    color: var(--nku-black) !important;
+}
+
+/* Change text color for primary */
+.text-primary {
+    color: var(--nku-gold) !important;
+}
+
+/* 4. Make all cards pop with a clean shadow */
+.card {
+    border: none; /* Removes the default grey border */
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease-in-out; /* A subtle shadow */
+}
+
+.issue-card:hover {
+    transform: translateY(-5px); /* <-- Lifts the card 5px */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* <-- Adds a bigger shadow */
+}
+
+/* 3. Add a smooth transition to all buttons, too */
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+/* 5. Fix for the dashed border (we'll make it gold) */
 .border-dashed {
-    border: 2px dashed #e0e0e0;
+    border: 2px dashed var(--nku-gold);
+    background-color: #fffaf0 !important; /* A very light gold background */
 }

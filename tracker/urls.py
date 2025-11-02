@@ -9,4 +9,5 @@ urlpatterns = [
     path('vote/<int:issue_id>/', views.vote_issue, name='vote_issue'),
     path('login/', auth_views.LoginView.as_view(template_name='tracker/login.html'), name='login'), 
     path('register/', views.register, name='register'),
+    path('logout/',auth_views.LogoutView.as_view(), name='logout'),
 ]

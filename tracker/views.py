@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Count
-from .models import Issue, Vote
+from .models import Issue, Vote, IssueHistory
 from .forms import IssueForm
 from django.contrib.auth import login
 from .forms import IssueForm, CustomUserCreationForm
@@ -66,7 +66,7 @@ def dashboard(request):
 
 
 # view for the report issue 
-@login_required
+@login_required(login_url='login')
 def report_issue(request):
     
     if request.method == 'POST':
@@ -76,6 +76,12 @@ def report_issue(request):
             new_issue = form.save(commit=False)
             new_issue.report = request.user 
             new_issue.save()
+
+            IssueHistory.objects.create(
+                issue=new_issue,
+                user=request.user,
+                action_description ="created this issue"
+            )
             return redirect('dashboard')
     else:
         form = IssueForm()
@@ -93,19 +99,33 @@ def issue_detail(request, issue_id):
 
     # Handle POST requests for status updates 
     if request.method == 'POST' and request.user.is_staff:
+        #Get the old status 
+        old_status_display = issue.get_status_display()
+
         # Get the new status from the submitted form data
         new_status = request.POST.get('status')
-        # Check if the submitted status is a valid choice
+        # Check if the submitted status is a valid and if it actually changed
         valid_statuses = [choice[0] for choice in Issue.STATUS_CHOICES]
-        if new_status in valid_statuses:
+        if new_status in valid_statuses and new_status != issue.status:
             issue.status = new_status
             issue.save() # Save the change to the database
+
+            new_status_display = issue.get_status_display()
+
+            #create log entry
+            IssueHistory.objects.create(
+                issue = issue,
+                user = request.user,
+                action_description=f"changed status from '{old_status_display} to {new_status_display}'"
+            )
             # Redirect back to the same page to see the update
             return redirect('issue_detail', issue_id=issue.id)
-
+    # fetching the history for this issue to display in the template
+    history_logs = issue.history.all()
     # passing the real issue obj to the template
     content = {
-        'issue': issue
+        'issue': issue,
+        'history_logs': history_logs
     }
     return render(request, 'tracker/issue_detail.html', content)
 

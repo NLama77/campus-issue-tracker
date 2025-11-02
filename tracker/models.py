@@ -59,3 +59,28 @@ class Vote(models.Model):
 
     class Meta:
         unique_together = ('user', 'issue')
+
+# model for recording issue history
+class IssueHistory(models.Model):
+    # Link to the issue this history log belongs to
+    # related_name='history' lets us do 'issue.history.all()' later
+    issue = models.ForeignKey(Issue, related_name='history', on_delete=models.CASCADE)
+    
+    # The user who performed the action (e.g., admin or original reporter)
+    # SET_NULL means if the user is deleted, the log entry remains but this field becomes null.
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    # A simple description of what happened
+    # e.g., "changed status from Reported to In Progress" or "created this issue"
+    action_description = models.CharField(max_length=255)
+    
+    # The date and time this log entry was created
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # This makes sure the history is always shown in the correct order (newest first)
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        # This is just for a nice display in the admin panel
+        return f"{self.issue.title} - {self.action_description[:50]}"
