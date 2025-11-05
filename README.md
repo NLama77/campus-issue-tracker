@@ -2,7 +2,8 @@
 
 This web application is a class project for a software engineering course. It provides a platform for students, faculty, and staff at Northern Kentucky University to report, track, and upvote campus maintenance issues, facilitating a direct line of communication with campus administration.
 
-
+## Live Demo
+Check out the live website here: [Campus Issue Tracker](https://campus-issue-tracker-qggs.onrender.com/)
 
 ## ✨ Core Features
 
